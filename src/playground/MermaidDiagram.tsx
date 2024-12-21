@@ -45,9 +45,9 @@ export const MermaidDiagram = ({ definition, id }: MermaidProps) => {
             />
           </div>
         </DialogTrigger>
-        <DialogContent className="max-w-[90vw] w-fit max-h-[90vh] min-w-[800px] min-h-[600px]">
+        <DialogContent className="max-w-[90vw] w-fit max-h-[90vh] min-w-[800px] min-h-[600px] overflow-y-auto">
           <div
-            className="mermaid w-full scale-100 origin-top-left flex justify-center items-center"
+            className="mermaid w-full scale-100 origin-top-left flex justify-center items-center max-w-[80vh] h-full"
             dangerouslySetInnerHTML={{ __html: svg }}
           />
         </DialogContent>
