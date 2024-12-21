@@ -47,7 +47,7 @@ const ExcalidrawWrapper = ({
   }, [mermaidDefinition, mermaidOutput]);
 
   return (
-    <div className="excalidraw-wrapper">
+    <div className="h-full w-full">
       <Excalidraw
         initialData={{
           appState: {
