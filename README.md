@@ -1,3 +1,5 @@
+> Source repository: https://github.com/excalidraw/mermaid-to-excalidraw
+
 # Rsbuild Project
 
 ## Setup
