@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useDeferredValue } from "react";
+import { useState, useCallback, useDeferredValue, useRef } from "react";
 import CustomTest from "./CustomTest.tsx";
 import ExcalidrawWrapper from "./ExcalidrawWrapper.tsx";
 import Testcases from "./Testcases.tsx";
@@ -11,6 +11,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import ScrollProgress from "@/components/ui/scroll-progress";
 
 export interface MermaidData {
   definition: string;
@@ -21,6 +22,7 @@ export interface MermaidData {
 export type ActiveTestCaseIndex = number | "custom" | null;
 
 const App = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [mermaidData, setMermaidData] = useState<MermaidData>({
     definition: "",
     error: null,
@@ -64,7 +66,12 @@ const App = () => {
         className="min-h-screen rounded-lg border"
       >
         <ResizablePanel defaultSize={40} minSize={10}>
-          <div className="flex h-full flex-col gap-4 p-6 overflow-y-auto">
+          <div
+            ref={containerRef}
+            className="flex h-full flex-col gap-4 overflow-y-auto relative"
+          >
+            <ScrollProgress containerRef={containerRef} />
+            <GitHubCorner />
             <CustomTest
               activeTestCaseIndex={activeTestCaseIndex}
               mermaidData={deferredMermaidData}

@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import {
   Excalidraw,
@@ -21,9 +23,7 @@ const ExcalidrawWrapper = ({
     useState<ExcalidrawImperativeAPI | null>(null);
 
   useEffect(() => {
-    if (!excalidrawAPI) {
-      return;
-    }
+    if (!excalidrawAPI) return;
 
     if (mermaidDefinition === "" || mermaidOutput === null) {
       excalidrawAPI.resetScene();
@@ -47,7 +47,7 @@ const ExcalidrawWrapper = ({
   }, [mermaidDefinition, mermaidOutput]);
 
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full min-h-[500px]">
       <Excalidraw
         initialData={{
           appState: {

@@ -6,34 +6,6 @@ body {
   margin: 0;
 }
 
-button {
-  height: 40px;
-  font-size: 16px;
-  background: #4dabf7;
-  border: 1px solid #a5d8ff;
-  box-shadow: none;
-  border-radius: 2px;
-  color: white;
-  cursor: pointer;
-}
-
-#excalidraw {
-  width: 50vw;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  right: 0;
-  border-left: 1px solid #ccc;
-
-  .mobile-misc-tools-container {
-    display: none !important;
-  }
-}
-
-.excalidraw-wrapper {
-  height: 100%;
-}
-
 #custom-test {
   width: 50vw;
 
@@ -97,7 +69,12 @@ a {
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 2px;
+    --radius: 0.5rem;
+    --color-1: 0 100% 63%;
+    --color-2: 270 100% 63%;
+    --color-3: 210 100% 63%;
+    --color-4: 195 100% 63%;
+    --color-5: 90 100% 63%;
   }
   .dark {
     --background: 240 10% 3.9%;
@@ -125,6 +102,11 @@ a {
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     --radius: 2px;
+    --color-1: 0 100% 63%;
+    --color-2: 270 100% 63%;
+    --color-3: 210 100% 63%;
+    --color-4: 195 100% 63%;
+    --color-5: 90 100% 63%;
   }
 }
 

@@ -1,12 +1,12 @@
+import { CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { Fragment } from "react";
-
-import { FLOWCHART_DIAGRAM_TESTCASES } from "./testcases/flowchart";
-import { SEQUENCE_DIAGRAM_TESTCASES } from "./testcases/sequence.ts";
-import { CLASS_DIAGRAM_TESTCASES } from "./testcases/class.ts";
-import { UNSUPPORTED_DIAGRAM_TESTCASES } from "./testcases/unsupported.ts";
-
 import SingleTestCase, { TestCase } from "./SingleTestCase.tsx";
 import type { ActiveTestCaseIndex, MermaidData } from "./index.tsx";
+import { CLASS_DIAGRAM_TESTCASES } from "./testcases/class.ts";
+import { FLOWCHART_DIAGRAM_TESTCASES } from "./testcases/flowchart";
+import { SEQUENCE_DIAGRAM_TESTCASES } from "./testcases/sequence.ts";
+import { UNSUPPORTED_DIAGRAM_TESTCASES } from "./testcases/unsupported.ts";
 
 interface TestcasesProps {
   onChange: (
@@ -29,36 +29,42 @@ const Testcases = ({ onChange }: TestcasesProps) => {
   let testCaseIndex = 0;
   return (
     <>
-      {testcaseTypes.map(({ name, testcases }) => {
-        const baseId = name.toLowerCase();
-        return (
-          <Fragment key={baseId}>
-            <h2>
-              {name} {"Diagrams"}
-            </h2>
-            <details>
-              <summary>
-                {name} {"Diagram Examples"}
-              </summary>
-              <div id={`${baseId}-container`} className="testcase-container">
-                {testcases.map((testcase, index) => {
-                  return (
-                    <SingleTestCase
-                      key={`${testcase.type}-${index}`}
-                      index={testCaseIndex++}
-                      onChange={(index) => {
-                        const { definition } = allTestCases[index];
-                        onChange(definition, index);
-                      }}
-                      testcase={testcase}
-                    />
-                  );
-                })}
-              </div>
-            </details>
-          </Fragment>
-        );
-      })}
+      <Separator className="my-1" />
+
+      <div className="p-4">
+        <CardTitle className="mb-2">Mermaid Examples</CardTitle>
+
+        {testcaseTypes.map(({ name, testcases }) => {
+          const baseId = name.toLowerCase();
+          return (
+            <Fragment key={baseId}>
+              <h2>
+                {name} {"Diagrams"}
+              </h2>
+              <details>
+                <summary>
+                  {name} {"Diagram Examples"}
+                </summary>
+                <div id={`${baseId}-container`} className="testcase-container">
+                  {testcases.map((testcase, index) => {
+                    return (
+                      <SingleTestCase
+                        key={`${testcase.type}-${index}`}
+                        index={testCaseIndex++}
+                        onChange={(index) => {
+                          const { definition } = allTestCases[index];
+                          onChange(definition, index);
+                        }}
+                        testcase={testcase}
+                      />
+                    );
+                  })}
+                </div>
+              </details>
+            </Fragment>
+          );
+        })}
+      </div>
     </>
   );
 };

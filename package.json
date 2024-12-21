@@ -10,9 +10,12 @@
   "dependencies": {
     "@excalidraw/markdown-to-text": "0.1.2",
     "@radix-ui/react-collapsible": "^1.1.2",
+    "@radix-ui/react-dialog": "^1.1.4",
+    "@radix-ui/react-separator": "^1.1.1",
     "@radix-ui/react-slot": "^1.1.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "framer-motion": "^11.15.0",
     "lucide-react": "^0.469.0",
     "mermaid": "10.9.0",
     "nanoid": "^5.0.9",
