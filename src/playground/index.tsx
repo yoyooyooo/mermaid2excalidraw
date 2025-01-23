@@ -1,17 +1,26 @@
 "use client";
 
-import { useState, useCallback, useDeferredValue, useRef } from "react";
-import CustomTest from "./CustomTest.tsx";
-import ExcalidrawWrapper from "./ExcalidrawWrapper.tsx";
-import Testcases from "./Testcases.tsx";
-import { parseMermaid } from "../core/parseMermaid.ts";
-import GitHubCorner from "./GitHubCorner.tsx";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import ScrollProgress from "@/components/ui/scroll-progress";
+import { useToast } from "@/hooks/use-toast";
+import { compressCode, decompressCode } from "@/lib/compress";
+import { useQueryState } from "nuqs";
+import {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { parseMermaid } from "../core/parseMermaid";
+import CustomTest from "./CustomTest";
+import ExcalidrawWrapper from "./ExcalidrawWrapper";
+import GitHubCorner from "./GitHubCorner";
+import Testcases from "./Testcases";
 
 export interface MermaidData {
   definition: string;
@@ -22,16 +31,47 @@ export interface MermaidData {
 export type ActiveTestCaseIndex = number | "custom" | null;
 
 const App = () => {
+  const { toast } = useToast();
   const containerRef = useRef<HTMLDivElement>(null);
+  const [code, setCode] = useQueryState("code");
   const [mermaidData, setMermaidData] = useState<MermaidData>({
-    definition: "",
+    definition: code ? decompressCode(code) || "" : "",
     error: null,
     output: null,
   });
 
   const [activeTestCaseIndex, setActiveTestCaseIndex] =
-    useState<ActiveTestCaseIndex>(null);
+    useState<ActiveTestCaseIndex>(code ? "custom" : null);
   const deferredMermaidData = useDeferredValue(mermaidData);
+
+  // Update useEffect to handle initial parsing
+  useEffect(() => {
+    const initializeFromUrl = async () => {
+      if (!code) return;
+
+      const decompressed = decompressCode(code);
+      console.log(decompressed, "decompressed");
+      if (!decompressed) return;
+
+      try {
+        const mermaid = await parseMermaid(decompressed);
+        console.log(mermaid, "mermaid");
+        setMermaidData({
+          definition: decompressed,
+          output: mermaid,
+          error: null,
+        });
+      } catch (error) {
+        setMermaidData({
+          definition: decompressed,
+          output: null,
+          error: String(error),
+        });
+      }
+    };
+
+    initializeFromUrl();
+  }, [code]);
 
   const handleOnChange = useCallback(
     async (
@@ -40,15 +80,19 @@ const App = () => {
     ) => {
       try {
         setActiveTestCaseIndex(activeTestCaseIndex);
-
         const mermaid = await parseMermaid(definition);
-
+        console.log(mermaid, 123);
         setMermaidData({
           definition,
           output: mermaid,
           error: null,
         });
+
+        // Update URL for any valid definition, not just custom test cases
+        const compressed = definition ? compressCode(definition) : null;
+        setCode(compressed);
       } catch (error) {
+        console.error(error);
         setMermaidData({
           definition,
           output: null,
@@ -56,7 +100,7 @@ const App = () => {
         });
       }
     },
-    []
+    [setCode]
   );
 
   return (
@@ -76,6 +120,7 @@ const App = () => {
               activeTestCaseIndex={activeTestCaseIndex}
               mermaidData={deferredMermaidData}
               onChange={handleOnChange}
+              value={mermaidData.definition}
             />
             <Testcases
               activeTestCaseIndex={activeTestCaseIndex}

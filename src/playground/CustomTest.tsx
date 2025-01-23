@@ -9,11 +9,15 @@ import {
 } from "@/components/ui/collapsible";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 import { ChevronDown } from "lucide-react";
+import { useEffect } from "react";
 import { MermaidDiagram } from "./MermaidDiagram.tsx";
 import type { ActiveTestCaseIndex, MermaidData } from "./index.tsx";
 
 interface CustomTestProps {
+  defaultValue?: string;
+  value?: string;
   onChange: (
     definition: MermaidData["definition"],
     activeTestCaseIndex: ActiveTestCaseIndex
@@ -22,18 +26,80 @@ interface CustomTestProps {
   activeTestCaseIndex: ActiveTestCaseIndex;
 }
 
+function ShareIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+      <polyline points="16 6 12 2 8 6" />
+      <line x1="12" y1="2" x2="12" y2="15" />
+    </svg>
+  );
+}
+
 const CustomTest = ({
+  defaultValue,
+  value,
   onChange,
   mermaidData,
   activeTestCaseIndex,
 }: CustomTestProps) => {
+  const { toast } = useToast();
   const isActive = activeTestCaseIndex === "custom";
+
+  useEffect(() => {
+    if (mermaidData.definition) {
+      setTimeout(() => {
+        onChange(mermaidData.definition, "custom");
+      }, 1000);
+    }
+  }, []);
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast({
+        title: "Link copied",
+        description: "You can share this link with others",
+      });
+    } catch (err) {
+      toast({
+        title: "Copy failed",
+        description: "Please copy the link manually",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <>
       <div className="h-screen flex-shrink-0 flex flex-col">
         <CardHeader>
-          <CardTitle>Mermaid Diagram</CardTitle>
+          <CardTitle className="flex items-center justify-between">
+            Mermaid Diagram
+            {activeTestCaseIndex === "custom" && mermaidData.definition && (
+              <Button
+                onClick={handleShare}
+                className="flex items-center gap-2 mr-10"
+                variant="outline"
+                size="sm"
+              >
+                <ShareIcon className="w-4 h-4" />
+                Share
+              </Button>
+            )}
+          </CardTitle>
         </CardHeader>
         <CardContent className="flex-1">
           <form
@@ -53,8 +119,10 @@ const CustomTest = ({
               rows={10}
               placeholder="Input Mermaid Syntax"
               className="font-mono flex-1"
+              defaultValue={defaultValue}
+              value={value}
               onChange={(e) => {
-                if (!isActive) return;
+                // if (!isActive) return;
                 onChange(e.target.value, "custom");
               }}
               onKeyDown={(e) => {
